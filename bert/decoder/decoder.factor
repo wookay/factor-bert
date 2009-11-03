@@ -35,6 +35,9 @@ DEFER: read-any-raw
     [ 1 read be> 1 = [ -1 ] [ 1 ] if ] keep read swapd
     [ >array ] dip zip [ first2 swap 8 * shift ] [ + ] map-reduce * ;
 
+: read-float ( length -- obj )
+    read [ CHAR: \0 = not ] filter string>float ;
+
 : read-string ( length -- obj )
     read utf8 decode ;
 
@@ -51,6 +54,7 @@ DEFER: read-any-raw
       { INT [ 4 read be> ] }
       { SMALL_BIGNUM [ 1 read be> read-bignum ] }
       { LARGE_BIGNUM [ 4 read be> read-bignum ] }
+      { FLOAT [ 31 read-float ] } 
       { NIL [ { } ] }
       { SMALL_TUPLE [ 1 read be> read-tuple ] }
       { LARGE_TUPLE [ 4 read be> read-tuple ] }

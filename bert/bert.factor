@@ -1,6 +1,6 @@
 ! Copyright (C) 2009 Woo-Kyoung Noh.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: math.parser sequences kernel io.binary ;
+USING: math.parser sequences kernel io.binary vocabs.loader ;
 IN: bert
 
 : ebin ( byte-array -- newseq )
