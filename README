@@ -1,7 +1,12 @@
 Factor BERT
 
+Factor
+http://factorcode.org/
+
 BERT
 http://bert-rpc.org/
 
-Factor
-http://factorcode.org/
+
+
+$ cat .factor-roots
+/Users/user/factor-bert/

@@ -3,27 +3,10 @@
 USING: kernel strings sequences math math.parser prettyprint arrays
 hashtables bert byte-arrays io.binary io.encodings.utf8 io.encodings.string 
 words.symbol accessors combinators fry lists splitting math.functions assocs ;
+USE: bert.constants
 IN: bert.encoder
 
 GENERIC: write-any-raw ( obj -- byte-array )
-
-CONSTANT: SMALL_INT 97
-CONSTANT: INT 98
-CONSTANT: FLOAT 99
-CONSTANT: ATOM 100
-CONSTANT: SMALL_TUPLE 104
-CONSTANT: LARGE_TUPLE 105
-CONSTANT: NIL 106
-CONSTANT: LIST 108
-CONSTANT: BIN 109
-CONSTANT: SMALL_BIGNUM 110
-CONSTANT: LARGE_BIGNUM 111
-CONSTANT: VERSION 131
-
-SYMBOL: bert
-SYMBOL: true
-SYMBOL: false
-SYMBOL: dict
 
 : >bert ( obj -- byte-array )
     VERSION 1 >be [ write-any-raw ] dip prepend ;
@@ -55,14 +38,14 @@ M: integer write-any-raw ( num -- )
           [ >bignum write-any-raw ] if ] if ;
 
 M: bignum write-any-raw ( bignum -- )
-  [ >bin length 8.0 / ceiling >fixnum dup 
-     256 <= [ '[ SMALL_BIGNUM 1 >be _ 1 >be ] call ]
-            [ '[ LARGE_BIGNUM 1 >be _ 4 >be ] call ] if append
-  ] [ write-bignum-guts ] bi append ;
+    [ >bin length 8.0 / ceiling >fixnum dup 
+      256 <= [ '[ SMALL_BIGNUM 1 >be _ 1 >be ] call ]
+             [ '[ LARGE_BIGNUM 1 >be _ 4 >be ] call ] if append
+    ] [ write-bignum-guts ] bi append ;
 
 M: string write-any-raw ( obj -- )
     [ NIL 1 >be ]
-    [ BIN 1 >be [ [ length 4 >be ] [ utf8 encode ] bi append ] dip prepend ]
+    [ STRING 1 >be [ utf8 encode [ length 2 >be ] [ ] bi append ] dip prepend ]
     if-empty ;
 
 M: f write-any-raw ( f -- )
@@ -71,7 +54,7 @@ M: f write-any-raw ( f -- )
 M: symbol write-any-raw ( obj -- )
     { { t [ { bert true } write-tuple ] } 
       [ name>> ATOM 1 >be 
-        [ [ length 2 >be ] [ utf8 encode ] bi append ] dip prepend ] } case ;
+        [ utf8 encode [ length 2 >be ] [ ] bi append ] dip prepend ] } case ;
 
 M: sequence write-any-raw ( array -- ) 
     [ B{ } ]
@@ -96,7 +79,7 @@ M: hashtable write-any-raw ( hashtable -- )
 : >exp ( x -- exp base )
     [ abs 0 swap [ dup [ 10.0 >= ] [ 1.0 < ] bi or ]
         [ dup 10.0 >= [ 10.0 / [ 1 + ] dip ] [ 10.0 * [ 1 - ] dip ] if ] while
-     ] keep 0 < [ neg ] when ;
+    ] keep 0 < [ neg ] when ;
 : exp>string ( exp base digits -- string )
     [ max-digits ] keep -rot
     [ [ 0 < "-" "+" ? ] [ abs number>string 2 CHAR: 0 pad-head ] bi
