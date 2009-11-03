@@ -18,7 +18,7 @@ IN: bert.decoder.tests
 
 [ { 1 } ] [ B{ 131 108 0 0 0 1 97 1 106 } bert> ] unit-test
 
-! don't konw to string to symbol
+! I don't know how get string to symbol
 SYMBOL: foo
 [ "foo" ] [ B{ 131 100 0 3 102 111 111 } bert> ] unit-test
 
