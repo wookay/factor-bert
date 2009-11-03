@@ -45,7 +45,7 @@ DEFER: read-any-raw
     >array [ drop read-any-raw ] map ;
 
 : read-bin ( length -- obj )
-    read ;
+    dup zero? [ B{ } nip ] [ read ] if ;
 
 : read-any-raw ( -- obj )
     1 read be>

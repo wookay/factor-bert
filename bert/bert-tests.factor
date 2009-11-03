@@ -1,4 +1,4 @@
-USING: tools.test bert ;
+USING: tools.test byte-arrays kernel bert ;
 IN: bert.tests
 
 [ "<<1>>"   ] [ B{ 1 } ebin   ] unit-test
@@ -8,12 +8,33 @@ IN: bert.tests
 
 
 USING: bert.encoder bert.decoder ;
-[ 1        ] [ 1 >bert bert>        ] unit-test
-[ 3.14     ] [ 3.14 >bert bert>     ] unit-test
+[ 4        ] [ 4 >bert bert>        ] unit-test
+[ 8.1516   ] [ 8.1516 >bert bert>   ] unit-test
 [ -3.014e3 ] [ -3.014e3 >bert bert> ] unit-test
+
+SYMBOL: foo
+[ "foo"    ] [ foo >bert bert>      ] unit-test !
+
+SYMBOL: coord
+[ { "coord" 23 42 } ] [ { coord 23 42 } >bert bert>      ] unit-test !
+
+[ { 1 2 3 }      ] [ { 1 2 3 } >bert bert>      ] unit-test
+
+SYMBOL: a
+[ { "a" { 1 2 } }      ] [ { a { 1 2 } } >bert bert>      ] unit-test
+
+"Roses are red\0Violets are blue" >byte-array [ ] curry
+[ "Roses are red\0Violets are blue" >byte-array >bert bert> ] unit-test
+[ B{ } ] [ B{ } >bert bert> ] unit-test
+
 [ { }      ] [ { } >bert bert>      ] unit-test
 [ { t f }  ] [ { t f } >bert bert>  ] unit-test
 [ "abc"    ] [ "abc" >bert bert>    ] unit-test
 [ H{ }     ] [ H{ } >bert bert>     ] unit-test
 
 [ H{ { "key" "value" } } ] [ H{ { "key" "value" } } >bert bert> ] unit-test
+
+
+! TODO
+! time	{bert, time, Megaseconds, Seconds, Microseconds}
+! regex	{bert, regex, Source, Options}

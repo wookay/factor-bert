@@ -48,6 +48,9 @@ M: string write-any-raw ( obj -- )
     [ STRING 1 >be [ utf8 encode [ length 2 >be ] [ ] bi append ] dip prepend ]
     if-empty ;
 
+M: byte-array write-any-raw ( byte-array -- ) 
+    BIN 1 >be [ [ length 4 >be ] [ ] bi append ] dip prepend ;
+
 M: f write-any-raw ( f -- )
     { bert false } write-tuple nip ;
 
