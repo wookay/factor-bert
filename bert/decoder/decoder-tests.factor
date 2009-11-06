@@ -1,4 +1,4 @@
-USING: tools.test syntax bert bert.decoder bert.constants sequences lists kernel ;
+USING: tools.test syntax bert bert.decoder bert.constants sequences lists kernel calendar namespaces ;
 IN: bert.decoder.tests
 
 [ 1 ] [ B{ 131 97 1 } bert> ] unit-test
@@ -18,15 +18,20 @@ IN: bert.decoder.tests
 
 [ { 1 } ] [ B{ 131 108 0 0 0 1 97 1 106 } bert> ] unit-test
 
-! I don't know how get string to symbol
-SYMBOL: foo
-[ "foo" ] [ B{ 131 100 0 3 102 111 111 } bert> ] unit-test
+"bert.decoder.tests" bert-vocab set-global
 
-[ "ㄱ" ] [ B{ 131 100 0 3 227 132 177 } bert> ] unit-test
+SYMBOL: foo
+[ foo ] [ B{ 131 100 0 3 102 111 111 } bert> ] unit-test
+
+SYMBOL: ㄱ
+[ ㄱ ] [ B{ 131 100 0 3 227 132 177 } bert> ] unit-test
 
 [ H{ } ] [ B{ 131 104 3 100 0 4 98 101 114 116 100 0 4 100 105 99 116 106 } bert> ] unit-test
 
 SYMBOL: a
-[ H{ { "a" 1 } } ] [ B{ 131 104 3 100 0 4 98 101 114 116 100 0 4 100 105 99 116 108 0 0 0 1 108 0 0 0 2 100 0 1 97 97 1 106 106 } bert> ] unit-test
+[ H{ { a 1 } } ] [ B{ 131 104 3 100 0 4 98 101 114 116 100 0 4 100 105 99 116 108 0 0 0 1 108 0 0 0 2 100 0 1 97 97 1 106 106 } bert> ] unit-test
 
 [ B{ } ] [ B{ 131 109 0 0 0 0 } bert> ] unit-test
+
+2009 11 3 23 19 1 instant <timestamp> [ ] curry
+[ B{ 131 104 5 100 0 4 98 101 114 116 100 0 4 116 105 109 101 98 0 0 4 233 98 0 4 110 37 97 0 } bert> ] unit-test

@@ -1,13 +1,21 @@
 ! Copyright (C) 2009 Woo-Kyoung Noh.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: io.streams.byte-array kernel io.encodings.binary io io.binary sequences combinators kernel prettyprint math math.parser arrays assocs strings fry accessors lists io.encodings.utf8 io.encodings.string hashtables ;
-USE: bert.constants
+USING: io.streams.byte-array kernel io.encodings.binary io io.binary sequences combinators kernel math math.parser arrays assocs strings fry accessors lists io.encodings.utf8 io.encodings.string hashtables calendar namespaces eval ;
+USING: bert.constants ;
 IN: bert.decoder
 
+
+GENERIC: read-regex ( seq -- obj )
 
 <PRIVATE
 
 DEFER: read-any-raw
+
+: eval-symbol ( seq -- symbol )
+    bert-vocab get-global
+    [ ]
+    [ "IN: " prepend  [ dup " SYMBOL:" -rot 3array " " join ] dip prepend 
+      eval( -- symbol ) ] if-empty ;
 
 : read-atom ( length -- obj )
     read utf8 decode
@@ -16,9 +24,14 @@ DEFER: read-any-raw
        { "true" [ true ] }
        { "false" [ false ] }
        { "dict" [ dict ] }
+       { "time" [ time ] }
+       { "regex" [ regex ] }
        { "nil" [ \ nil ] }
-       [ ]
+       [ eval-symbol ]
     } case ;
+
+: read-time ( seq -- obj )
+    3 tail* first3 [ 1000000 * 1000000 * ] [ 1000000 * ] [ ] tri* + + micros>timestamp ;
 
 : read-tuple ( length -- obj )
     >array [ drop read-any-raw ] map 
@@ -26,8 +39,14 @@ DEFER: read-any-raw
       { { bert true } [ t ] }
       { { bert false } [ f ] }
       { { bert nil } [ \ nil ] }
-      [ dup length 3 =
-        [ dup first2 2array { bert dict } = [ last >hashtable ] [ ] if ] 
+      [ dup length 2 >
+        [ dup first2 2array
+          {
+            { { bert dict } [ last >hashtable ] }
+            { { bert time } [ read-time ] }
+            { { bert regex } [ read-regex ] }
+            [ nip ]
+          } case ]
         [ ] if ]
     } case ;
 
@@ -62,11 +81,11 @@ DEFER: read-any-raw
       { STRING [ 2 read be> read-string ] }
       { LIST [ 4 read be> read-list ] }
       { BIN [ 4 read be> read-bin ] }
-      [ 8 nip ]
+      [ 42 nip ]
     } case ;
 
 PRIVATE>
 
 
 : bert> ( byte-array -- obj )
-    binary [ 1 read be> VERSION = [ read-any-raw ] [ 5 ] if ] with-byte-reader ;
+    binary [ 1 read be> VERSION = [ read-any-raw ] [ 42 ] if ] with-byte-reader ;

@@ -14,7 +14,6 @@ CONSTANT: SMALL_BIGNUM 110
 CONSTANT: LARGE_BIGNUM 111
 CONSTANT: VERSION 131
 
-SYMBOL: bert
-SYMBOL: true
-SYMBOL: false
-SYMBOL: dict
+SYMBOLS: bert true false dict time regex ;
+SYMBOLS: caseless dollar_endonly ;
+SYMBOL: bert-vocab

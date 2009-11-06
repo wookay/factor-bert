@@ -1,7 +1,7 @@
 ! Copyright (C) 2009 Woo-Kyoung Noh.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: kernel strings sequences math math.parser prettyprint arrays
-hashtables bert byte-arrays io.binary io.encodings.utf8 io.encodings.string 
+USING: kernel strings sequences math math.parser prettyprint arrays calendar
+hashtables byte-arrays io.binary io.encodings.utf8 io.encodings.string 
 words.symbol accessors combinators fry lists splitting math.functions assocs ;
 USE: bert.constants
 IN: bert.encoder
@@ -11,14 +11,13 @@ GENERIC: write-any-raw ( obj -- byte-array )
 : >bert ( obj -- byte-array )
     VERSION 1 >be [ write-any-raw ] dip prepend ;
 
-
-<PRIVATE
-
 : write-tuple ( seq -- byte-array )
     [ length dup 256 <
       [ '[ SMALL_TUPLE _ 2byte-array ] call ]
       [ '[ LARGE_TUPLE 1 >be _ 4 >be ] call append ] if ]
     [ [ write-any-raw ] [ append ] map-reduce ] bi append ;
+
+<PRIVATE
 
 : write-bignum-guts ( bignum -- byte-array )
    [ 0 >= [ 0 ] [ 1 ] if 1 >be ]
@@ -72,6 +71,11 @@ M: list write-any-raw ( list -- )
 
 M: hashtable write-any-raw ( hashtable -- )
     [ ] { } assoc-map-as '[ bert dict _ 3array ] call write-tuple ;
+
+M: timestamp write-any-raw ( timestamp -- )
+    timestamp>micros 
+    [ 1000000 / [ 1000000 / >fixnum ] [ 1000000 mod >fixnum ] bi ] 
+    [ 1000000 mod ] bi 3array { bert time } prepend write-tuple ;
 
 
 ! from John Benediktsson's formatting.factor

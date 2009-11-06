@@ -1,4 +1,4 @@
-USING: tools.test syntax bert bert.encoder sequences ;
+USING: tools.test syntax bert bert.encoder sequences calendar ;
 IN: bert.encoder.tests
 
 ! CONSTANT: SMALL_INT 97
@@ -45,3 +45,5 @@ SYMBOL: a
 [ "<<131,104,3,100,0,4,98,101,114,116,100,0,4,100,105,99,116,108,0,0,0,1,108,0,0,0,2,100,0,1,97,97,1,106,106>>" ] [ H{ { a 1 } } >bert ebin ] unit-test
 
 [ "<<131,109,0,0,0,0>>" ] [ B{ } >bert ebin ] unit-test
+
+[ B{ 131 104 5 100 0 4 98 101 114 116 100 0 4 116 105 109 101 98 0 0 4 233 98 0 4 110 37 97 0 } ] [ 2009 11 3 23 19 1 instant <timestamp> >bert ] unit-test
