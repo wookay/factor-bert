@@ -6,6 +6,8 @@ words.symbol accessors combinators fry lists splitting math.functions assocs ;
 USE: bert.constants
 IN: bert.encoder
 
+TUPLE: bert-tuple seq ;
+
 GENERIC: write-any-raw ( obj -- byte-array )
 
 : >bert ( obj -- byte-array )
@@ -62,6 +64,9 @@ M: sequence write-any-raw ( array -- )
     [ B{ } ]
     [ LIST 1 >be [ [ length 4 >be ] [ [ write-any-raw ] [ append ] map-reduce ] bi append ] dip prepend ] 
     if-empty NIL 1 >be append ;
+
+M: bert-tuple write-any-raw ( bert-tuple -- ) 
+    seq>> write-tuple ;
 
 M: list write-any-raw ( list -- )
     {

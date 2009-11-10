@@ -86,6 +86,10 @@ DEFER: read-any-raw
 
 PRIVATE>
 
-
 : bert> ( byte-array -- obj )
-    binary [ 1 read be> VERSION = [ read-any-raw ] [ 42 ] if ] with-byte-reader ;
+    binary [ 1 read be>
+      {
+        { VERSION [ read-any-raw ] }
+        [ ]
+      } case
+    ] with-byte-reader ;

@@ -9,8 +9,10 @@ M: sequence read-regex ( seq -- obj )
     2 tail* first2
     [ <regexp> ]
     [ [ {
-          { caseless [ case-insensitive ] }
-          { dollar_endonly [ unix-lines ] }
+          { "caseless" [ case-insensitive ] }
+          { "dollar_endonly" [ unix-lines ] }
+          { "multiline" [ multiline ] }
+          { "dotall" [ dotall ] }
           [ ]
-        } case ] map <optioned-regexp> ]
+        } case ] map { } swap { } <options> regexp new-regexp ]
    if-empty ;
