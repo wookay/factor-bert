@@ -35,11 +35,19 @@ SYMBOL: coord
 
 SYMBOL: a
 [ { a { 1 2 } } ] [ { a { 1 2 } } >bert bert> ] unit-test
+[ { a { 3 4 } } ] [ { a { 3 4 } } >bert bert> ] unit-test
 
 [ H{ { "key" "value" } } ] [ H{ { "key" "value" } } >bert bert> ] unit-test
 
 2009 11 3 23 19 1 instant <timestamp> [ ] curry
 [ 2009 11 3 23 19 1 instant <timestamp> >bert bert> ] unit-test
+
+SYMBOLS: call calc add ;
+[ { call calc add { 1 2 } } ]
+[ { call calc add { 1 2 } } <bert-tuple> >bert bert> ] unit-test
+
+[ { call } ]
+[ { call } <bert-tuple> >bert bert> ] unit-test
 
 
 ! regexp is slow

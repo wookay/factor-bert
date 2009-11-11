@@ -1,7 +1,7 @@
 ! Copyright (C) 2009 Woo-Kyoung Noh.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: io.streams.byte-array kernel io.encodings.binary io io.binary sequences combinators kernel math math.parser arrays assocs strings fry accessors lists io.encodings.utf8 io.encodings.string hashtables calendar namespaces eval ;
-USING: bert.constants ;
+USING: io.streams.byte-array kernel io.encodings.binary io io.binary sequences combinators kernel math math.parser arrays assocs strings fry accessors lists io.encodings.utf8 io.encodings.string hashtables calendar namespaces eval classes byte-arrays ;
+USING: bert.constants bert ;
 IN: bert.decoder
 
 
@@ -10,6 +10,9 @@ GENERIC: read-regex ( seq -- obj )
 <PRIVATE
 
 DEFER: read-any-raw
+
+: read-byte-array ( byte-array -- obj )
+    binary [ read-any-raw ]  with-byte-reader ;
 
 : eval-symbol ( seq -- symbol )
     bert-vocab get-global
@@ -33,6 +36,12 @@ DEFER: read-any-raw
 : read-time ( seq -- obj )
     3 tail* first3 [ 1000000 * 1000000 * ] [ 1000000 * ] [ ] tri* + + micros>timestamp ;
 
+: read-normal-tuple ( seq -- obj )
+    [ dup class {
+      { byte-array [ read-byte-array ] }
+      [ drop ]
+    } case ] map ;
+
 : read-tuple ( length -- obj )
     >array [ drop read-any-raw ] map 
     {
@@ -45,7 +54,7 @@ DEFER: read-any-raw
             { { bert dict } [ last >hashtable ] }
             { { bert time } [ read-time ] }
             { { bert regex } [ read-regex ] }
-            [ nip ]
+            [ drop read-normal-tuple ]
           } case ]
         [ ] if ]
     } case ;
@@ -81,15 +90,14 @@ DEFER: read-any-raw
       { STRING [ 2 read be> read-string ] }
       { LIST [ 4 read be> read-list ] }
       { BIN [ 4 read be> read-bin ] }
-      [ 42 nip ]
+      [ ]
     } case ;
 
 PRIVATE>
 
 : bert> ( byte-array -- obj )
-    binary [ 1 read be>
-      {
-        { VERSION [ read-any-raw ] }
-        [ ]
-      } case
-    ] with-byte-reader ;
+    1 cut swap be>
+    {
+      { VERSION [ read-byte-array ] }
+      [ drop ]
+    } case ;

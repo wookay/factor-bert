@@ -28,6 +28,8 @@ IN: bert.encoder.tests
 
 SYMBOL: foo
 [ "<<131,100,0,3,102,111,111>>" ] [ foo >bert >ebin ] unit-test
+[ "<<131,100,0,3,102,111,111>>" ] [ "foo" <bert-atom> >bert >ebin ] unit-test
+[ "<<131,107,0,3,102,111,111>>" ] [ "foo" >bert >ebin ] unit-test
 
 SYMBOL: ㄱ
 [ "<<131,100,0,3,227,132,177>>" ] [ ㄱ >bert >ebin ] unit-test
@@ -49,4 +51,4 @@ SYMBOL: a
 [ B{ 131 104 5 100 0 4 98 101 114 116 100 0 4 116 105 109 101 98 0 0 4 233 98 0 4 110 37 97 0 } ] [ 2009 11 3 23 19 1 instant <timestamp> >bert ] unit-test
 
 SYMBOLS: call calc add ;
-[ "<<131,104,4,100,0,4,99,97,108,108,100,0,4,99,97,108,99,100,0,3,97,100,100,108,0,0,0,2,97,1,97,2,106>>" ] [ { call calc add { 1 2 } } bert-tuple boa >bert >ebin ] unit-test
+[ "<<131,104,4,100,0,4,99,97,108,108,100,0,4,99,97,108,99,100,0,3,97,100,100,108,0,0,0,2,97,1,97,2,106>>" ] [ { call calc add { 1 2 } } <bert-tuple> >bert >ebin ] unit-test

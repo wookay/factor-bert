@@ -1,10 +1,8 @@
+! Copyright (C) 2009 Woo-Kyoung Noh.
+! See http://factorcode.org/license.txt for BSD license.
 USING: words.symbol quotations kernel arrays sequences accessors io.sockets math io concurrency.promises io.encodings.utf8 calendar namespaces io.timeouts io.encodings.ascii lists combinators accessors fry strings io.encodings.string io.binary bert.encoder bert.decoder bert.constants bert io.streams.byte-array destructors io.streams.duplex classes byte-arrays io.encodings.binary classes.tuple ;
+USE: bert-rpc
 IN: bert-rpc.client
-
-USE: prettyprint 
-
-TUPLE: bert-request args fun mod kind ;
-TUPLE: bert-error type code class detail backtrace ;
 
 <PRIVATE
 
@@ -25,7 +23,15 @@ TUPLE: bert-error type code class detail backtrace ;
      { "proxy" [ f nip ] }
    } case >>detail ;
 
-: bert-response ( byte-array -- obj )
+: transport ( inet byte-array -- byte-array )
+    [ binary ] dip
+    [ [ write1 ] each flush 4 read be> read ] curry with-client ;
+
+: request ( seq -- byte-array )
+    [ 3 head* 1array ] [ 3 tail* reverse ] bi prepend
+    <bert-tuple> >bert >berp ;
+
+: response ( byte-array -- obj )
     bert> dup first {
       { "reply" [ second ] }
       { "noreply" [ nil nip ] } ! TODO: RPC asynchronously
@@ -33,16 +39,8 @@ TUPLE: bert-error type code class detail backtrace ;
       [ drop ]
     } case ;
 
-: transport ( inet byte-array -- byte-array )
-    [ binary ] dip
-    [ [ write1 ] each flush 4 read be> read ] curry with-client ;
-
-: bert-request ( seq -- byte-array )
-    [ 3 head* 1array ] [ 3 tail* reverse ] bi prepend
-    bert-tuple boa dup . >bert >berp ;
-
 : service ( inet quot symbol -- obj )
-    suffix array>> bert-request transport bert-response ;
+    suffix array>> request transport response ;
 
 SYMBOLS: cast call ;
 

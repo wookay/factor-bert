@@ -1,25 +1,24 @@
 ! Copyright (C) 2009 Woo-Kyoung Noh.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: kernel strings sequences math math.parser prettyprint arrays calendar
+USING: kernel strings sequences math math.parser arrays calendar
 hashtables byte-arrays io.binary io.encodings.utf8 io.encodings.string 
 words.symbol accessors combinators fry lists splitting math.functions assocs ;
-USE: bert.constants
+USING: bert.constants bert ;
 IN: bert.encoder
 
-TUPLE: bert-tuple seq ;
 
 GENERIC: write-any-raw ( obj -- byte-array )
 
 : >bert ( obj -- byte-array )
     VERSION 1 >be [ write-any-raw ] dip prepend ;
 
+<PRIVATE
+
 : write-tuple ( seq -- byte-array )
     [ length dup 256 <
       [ '[ SMALL_TUPLE _ 2byte-array ] call ]
       [ '[ LARGE_TUPLE 1 >be _ 4 >be ] call append ] if ]
     [ [ write-any-raw ] [ append ] map-reduce ] bi append ;
-
-<PRIVATE
 
 : write-bignum-guts ( bignum -- byte-array )
    [ 0 >= [ 0 ] [ 1 ] if 1 >be ]
@@ -55,10 +54,15 @@ M: byte-array write-any-raw ( byte-array -- )
 M: f write-any-raw ( f -- )
     { bert false } write-tuple nip ;
 
+M: bert-atom write-any-raw ( bert-atom -- )
+   name>> ATOM 1 >be [ utf8 encode [ length 2 >be ] [ ] bi append ] dip prepend ;
+
 M: symbol write-any-raw ( obj -- )
-    { { t [ { bert true } write-tuple ] } 
-      [ name>> ATOM 1 >be 
-        [ utf8 encode [ length 2 >be ] [ ] bi append ] dip prepend ] } case ;
+    {
+      { t [ { bert true } write-tuple ] } 
+      [ name>> <bert-atom> write-any-raw ]
+    } case ;
+      
 
 M: sequence write-any-raw ( array -- ) 
     [ B{ } ]

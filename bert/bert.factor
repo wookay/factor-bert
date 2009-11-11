@@ -13,5 +13,11 @@ IN: bert
 : >berp ( byte-array -- byte-array )
     [ length 4 >be ] keep append ;
 
-: berp> ( byte-array -- byte-array )
-    4 tail ;
+
+TUPLE: bert-atom name ;
+: <bert-atom> ( string -- bert-atom )
+    bert-atom boa ;
+
+TUPLE: bert-tuple seq ;
+: <bert-tuple> ( seq -- bert-tuple )
+    bert-tuple boa ;

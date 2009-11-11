@@ -1,6 +1,6 @@
 ! Copyright (C) 2009 Woo-Kyoung Noh.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: io.streams.byte-array kernel io.encodings.binary io io.binary sequences combinators kernel prettyprint math math.parser arrays assocs strings fry accessors ;
+USING: io.streams.byte-array kernel io.encodings.binary io io.binary sequences combinators kernel math math.parser arrays assocs strings fry accessors ;
 USING: regexp regexp.ast ;
 USING: bert.decoder bert.constants ;
 IN: bert.decoder
