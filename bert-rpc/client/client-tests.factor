@@ -2,8 +2,8 @@ USING: tools.test syntax io.sockets accessors kernel ;
 USING: bert-rpc bert-rpc.client ;
 IN: bert-rpc.client.tests
 
-! CONSTANT: PORT 9999
-CONSTANT: PORT 8000
+CONSTANT: PORT 9999
+! CONSTANT: PORT 8000
 
 SYMBOLS: calc add ;
 
