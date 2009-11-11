@@ -1,0 +1,22 @@
+BERT-RPC Server/Client for Factor
+
+
+# add path for factor-bert
+$ cat ~/.factor-roots
+/Users/username/factor-bert/
+
+
+# with ernie server
+$ ernie -p 9999 -n 10 -h calc.rb
+...
+
+# set PORT as 9999 in client-tests.factor
+~/factor-bert/bert-rpc/client$ factor client-tests.factor
+
+
+# with factor BERT-RPC server
+~/factor-bert/bert-rpc/server$ factor server-tests.factor 
+bert-server started  ( 8000 port )
+
+# set PORT as 8000 in client-tests.factor
+~/factor-bert/bert-rpc/client$ factor client-tests.factor
