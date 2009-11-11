@@ -15,7 +15,7 @@ DEFER: handle-call
 
 SYMBOL: bert-server
 
-: handle-error ( bert-request -- bert-error )
+: handle-error ( bert-request -- bert-tuple )
     drop 
     { 
       T{ bert-atom f "error" }
@@ -41,7 +41,7 @@ SYMBOL: bert-server
       }
     ] recover <bert-tuple> ; inline
 
-: handle-request ( byte-array -- byte-array )
+: handle-request ( byte-array -- obj )
     bert> dup first {
       { "call" [ bert-request prefix >tuple handle-call ] }
       ! { "cast" [ bert-request prefix >tuple handle-cast ] }
