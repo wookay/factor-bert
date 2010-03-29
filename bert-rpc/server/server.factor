@@ -9,7 +9,8 @@ USE: bert-rpc
 IN: bert-rpc.server
 
 SYMBOL: bert-dispatch
-DEFER: handle-call
+DEFER: handlecall
+DEFER: handlecast
 
 <PRIVATE
 
@@ -43,8 +44,8 @@ SYMBOL: bert-server
 
 : handle-request ( byte-array -- obj )
     bert> dup first {
-      { "call" [ bert-request prefix >tuple handle-call ] }
-      ! { "cast" [ bert-request prefix >tuple handle-cast ] }
+      { +call+ [ bert-request prefix >tuple handlecall ] }
+      ! +cast+ [ bert-request prefix >tuple handlecast ] }
     } case ; inline
 
 : server-loop ( server -- )
@@ -55,11 +56,14 @@ SYMBOL: bert-server
 PRIVATE>
 
 
-: handle-call ( bert-request -- obj )
+: handlecall ( bert-request -- obj )
     dup [ fun>> ] [ mod>> ] bi 2array 1quotation
     [ [ present ] map ] prepose [ = ] compose 
     [ bert-dispatch get ] dip any?
     [ handle-reply ] [ handle-error ] if ; inline
+
+: handlecast ( bert-request -- obj )
+    { noreply } <bert-tuple> ;
 
 
 : start-bert-server ( inet -- )

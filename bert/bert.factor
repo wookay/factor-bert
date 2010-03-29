@@ -1,6 +1,6 @@
 ! Copyright (C) 2009 Woo-Kyoung Noh.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: math.parser sequences kernel io.binary splitting ;
+USING: math.parser sequences kernel io.binary splitting vocabs.loader ;
 IN: bert
 
 

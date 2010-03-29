@@ -9,3 +9,6 @@ TUPLE: bert-request kind mod fun args ;
 TUPLE: bert-error type code class detail backtrace ;
 
 SYMBOL: reply
+SYMBOL: noreply
+SYMBOL: +call+
+SYMBOL: +cast+

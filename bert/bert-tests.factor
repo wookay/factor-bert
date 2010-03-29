@@ -11,7 +11,7 @@ IN: bert.tests
 USING: bert.encoder bert.decoder ;
 [ 4         ] [ 4 >bert bert>         ] unit-test
 [ 8.1516    ] [ 8.1516 >bert bert>    ] unit-test
-[ -3.014e3  ] [ -3.014e3 >bert bert>  ] unit-test
+[ -3014.0   ] [ -3014.0 >bert bert>   ] unit-test
 [ { 1 2 3 } ] [ { 1 2 3 } >bert bert> ] unit-test
 
 "Roses are red\0Violets are blue" >byte-array [ ] curry

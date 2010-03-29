@@ -4,6 +4,7 @@ USING: io.streams.byte-array kernel io.encodings.binary io io.binary sequences c
 USING: bert.constants bert ;
 IN: bert.decoder
 
+USE: prettyprint
 
 GENERIC: read-regex ( seq -- obj )
 
@@ -43,7 +44,7 @@ DEFER: read-any-raw
     } case ] map ;
 
 : read-tuple ( length -- obj )
-    >array [ drop read-any-raw ] map 
+    [ read-any-raw ] replicate
     {
       { { bert true } [ t ] }
       { { bert false } [ f ] }
@@ -59,18 +60,20 @@ DEFER: read-any-raw
         [ ] if ]
     } case ;
 
+! ggg
 : read-bignum ( length -- obj )
-    [ 1 read be> 1 = [ -1 ] [ 1 ] if ] keep read swapd
-    [ >array ] dip zip [ first2 swap 8 * shift ] [ + ] map-reduce * ;
+    [ 1 read be> 1 = [ -1 ] [ 1 ] if ] keep
+    read rot drop
+    >array [ 2array ] map-index [ first2 8 * shift ] [ + ] map-reduce * ;
 
 : read-float ( length -- obj )
-    read [ CHAR: \0 = not ] filter string>float ;
+    read [ CHAR: \0 = not ] filter string>number ;
 
 : read-string ( length -- obj )
     read utf8 decode ;
 
 : read-list ( length -- obj )
-    >array [ drop read-any-raw ] map ;
+    [ read-any-raw ] replicate ;
 
 : read-bin ( length -- obj )
     dup zero? [ B{ } nip ] [ read ] if ;
